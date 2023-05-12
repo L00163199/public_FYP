@@ -1,0 +1,103 @@
+<!--
+  Student Name: Dylan Walsh
+  Student Number: L00163199
+  Description: The purpose of this file is to
+  setup a base template for the web app to which
+  all other html files used will extend from. This
+  layout is inline with the design chapter as per
+  my disseration
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ATU_D_CS_2023</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../static/js/script.js"></script>
+    <script>
+      // Will remove the flash message after 3 seconds
+      setTimeout(function() {
+        // The flash message is used to indicate if
+        // the file was successfully uploaded or not
+          var flash_message = document.getElementById('flash-message');
+          if (flash_message) {
+              flash_message.parentNode.removeChild(flash_message);
+          }
+      }, 3000);
+  </script>
+  
+  </head>
+  <body>
+    <header>
+        <!--The header can be selected to navigate to the homepage -->
+        <h1><a href="{{ url_for('index') }}">ATU_D_CS_2023</a></h1>
+    </header>
+
+    <!-- Our top navigation bar -->
+    <nav>
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+      <a href="{{ url_for('disclaimer') }}">Disclaimer</a>
+      <a href="{{ url_for('datasets') }}">Datasets</a>
+    </nav>
+
+    <!-- Left menu bar to provide data visualisation options -->
+    <div class="box">
+        <div class="dropdown">
+          <a class="dropbtn" href="#">Visualisations
+            <i class="fa fa-caret-down"></i>
+          </a>
+          <div class="dropdown-content">
+            <a href="{{ url_for('network_graph') }}">Network Diagram</a>
+            <a href="{{ url_for('wordcloud') }}">Wordcloud</a>
+            <a href="{{ url_for('barcharts') }}">Barcharts</a>
+            <a href="{{ url_for('boxplots') }}">Boxplots</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a class="dropbtn" href="#">Time Series
+            <i class="fa fa-caret-down"></i>
+          </a>
+          <div class="dropdown-content">
+            <a href="{{ url_for('time_series_analysis') }}">Analysis</a>
+            <a href="{{ url_for('time_series_forecast') }}">Forecast</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a class="dropbtn" href="#">Correlations
+            <i class="fa fa-caret-down"></i>
+          </a>
+          <div class="dropdown-content">
+            <a href="{{ url_for('pearson') }}">Pearson's Coefficient</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 
+        Other pages that extended on this file will
+        have their specific content filled into the 
+        following content block
+      -->
+      {% block content %}
+        <!-- This will be replaced by other html files' content -->
+        <div class="about">
+          <h2>Welcome</h2>
+          <p>Please choose one of the following options to perform on your dataset as presented in the menu bar to the left of the page.</p>
+        </div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for message in messages %}
+                <li id="flash-message">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+      {% endblock %}
+    <footer>
+      <p>Developed by Dylan Walsh</p>
+    </footer>
+  </body>
+</html>

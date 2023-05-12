@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<!--
+  Student Name: Dylan Walsh
+  Student Number: L00163199
+  Description: The purpose of this file is to
+  plot a time series analysis visualisation
+  based on 2 variables selected by the user
+-->
+<div class="container">
+  <h2>Time Series Analysis</h2>
+  <form method="POST">
+    <div class="form-group">
+
+      <!-- Select x value -->
+      <label for="variable1-select">Select Date Column:</label>
+      <select class="form-control" id="xvalue-select" name="x_value">
+        {% for option in options %}
+        <option value="{{ option }}" {% if x_value == option %} selected {% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Select y value -->
+      <label for="variable2-select">Select Numeric Column:</label>
+      <select class="form-control" id="yvalue-select" name="y_value">
+        {% for option in options %}
+        <option value="{{ option }}" {% if y_value == option %} selected {% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Plot</button>
+    </div>
+  </form>
+  <!-- 
+    Contains the visualisation, added scroll
+    as the visualisation may be too large
+    to fit within the one page. This will
+    avoid it overflowing
+  -->
+  <div class="chart-container" style="max-height: 500px; overflow: scroll;">
+    <div id="time-series-plot"></div>
+  </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script>
+    var data = {{ graphJSON|safe }}
+    var layout = {title: 'Time Series Plot for {{ x_value }}', xaxis: {title: 'Year'}, yaxis: {title: '{{ y_value }}'}, template: 'plotly_white'};
+    Plotly.newPlot('time-series-plot', data, layout);
+  </script>
+{% endblock %}

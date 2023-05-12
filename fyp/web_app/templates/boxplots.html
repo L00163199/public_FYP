@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block content %}
+<!--
+  Student Name: Dylan Walsh
+  Student Number: L00163199
+  Description: The purpose of this file is to
+  plot a boxplot visualisation based on
+  variables selected by the end user
+-->
+<div class="container">
+  <h2>Box Plot</h2>
+  <form method="POST">
+    <div class="form-group">
+
+      <!-- Select x value -->
+      <label for="x-value-select">Select X Column:</label>
+      <select class="form-control" id="x-value-select" name="x_column">
+        {% for option in options %}
+        <option value="{{ option }}" {% if x_column == option %} selected {% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Select y value -->
+      <label for="y-value-select">Select Y Column:</label>
+      <select class="form-control" id="y-value-select" name="y_column">
+        {% for option in options %}
+        <option value="{{ option }}" {% if y_column == option %} selected {% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Plot</button>
+    </div>
+  </form>
+
+  <!-- Contains the boxplot visualisation -->
+  <div class="chart-container" style="max-height: 500px; overflow: scroll;">
+    <div id="box-plot"></div>
+  </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+  // The following link was used for reference
+  // https://plotly.com/javascript/figure-labels/
+  var layout = {title: 'Box Plot', xaxis: {title: '{{ x_column }}'}, yaxis: {title: '{{ y_column }}'}};
+  var data = {{ graphJSON|safe }}
+  
+  Plotly.newPlot('box-plot', data, layout, {displayModeBar: false});
+</script>
+{% endblock %}

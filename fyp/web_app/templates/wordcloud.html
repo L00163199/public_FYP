@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+
+{% block content %}
+<!--
+  Student Name: Dylan Walsh
+  Student Number: L00163199
+  Description: The purpose of this file is to
+  plot a wordcloud visualisation based on
+  a selected column from the dataset by the user
+-->
+<div class="container">
+  <h2>Word Cloud</h2>
+  <form method="POST">
+    <div class="form-group">
+
+      <!-- Select a column name from the dataset -->
+      <label for="selected-column">Select Column:</label>
+      <select class="form-control" id="selected-column" name="selected_column">
+        {% for option in options %}
+        <option value="{{ option }}" {% if selected_column == option %} selected {% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select><br>
+      <button type="submit" class="btn btn-primary">Generate</button>
+    </div>
+  </form>
+  <!-- Contains the wordcloud visualisation -->
+  <div class="row justify-content-center" style="margin-left: 150px;">
+    <div class="col-lg-6" style="position: relative; left: 150px;">
+      <div id="wordcloud-container" style="margin-left: 150px;"><br>
+        <div id="wordcloud" style="margin-left: 150px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.1/echarts.min.js"></script>
+<script>
+  var chart = echarts.init(document.getElementById('wordcloud'))
+  var chartOptions = {{ chart|safe }}
+</script>
+{% endblock %}

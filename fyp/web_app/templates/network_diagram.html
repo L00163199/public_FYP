@@ -1,0 +1,125 @@
+{% extends "index.html" %}
+
+{% block content %}
+<!--
+  Student Name: Dylan Walsh
+  Student Number: L00163199
+  Description: The purpose of this file is to
+  plot a network graph visualisation based on
+  a set of options selected by the user
+-->
+  <form method="POST">
+    <div class="form-group">
+
+      <!-- Select the source node -->
+      <label for="source">Source:</label>
+      <select id="source" name="source">
+        {% for option in options %}
+          <option value="{{ option }}">{{ option }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Select the target node -->
+      <label for="target">Target:</label>
+      <select id="target" name="target">
+        {% for option in options %}
+          <option value="{{ option }}">{{ option }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Select the edge weight -->
+      <label for="edge">Edge:</label>
+      <select id="edge" name="edge">
+        {% for option in options %}
+          <option value="{{ option }}">{{ option }}</option>
+        {% endfor %}
+      </select><br><br>
+
+      <!-- 
+        Variety of options for the end user to
+        choose from to manipulate the visualisation
+      -->
+      <label for="source-color">Source Color:</label>
+      <input type="color" id="source-color" name="source-color" value="#FF0000">
+
+      <label for="target-color">Target Color:</label>
+      <input type="color" id="target-color" name="target-color" value="#0000FF">
+
+      <label for="label-color">Label Color:</label>
+      <input type="color" id="label-color" name="label-color" value="#000000">
+
+      <label for="edge-color">Edge Color:</label>
+      <input type="color" id="edge-color" name="edge-color" value="#000000">
+
+      <label for="bg-color">Background Color:</label>
+      <input type="color" id="bg-color" name="bg-color" value="#ffffff">
+
+      <input type="submit" value="Submit">
+        <!-- Add a button to download the image -->
+      <button type="button" id="download-btn">Download Image</button>
+    </div>
+  </form>
+
+  <!-- Add a hidden canvas to convert the image to a downloadable format -->
+    <canvas id="canvas" style="display:none;"></canvas>
+  <!--
+    Contains the network graph,
+    note that the size of the image has been
+    adjusted to specifically fit the results of
+    the dataset specific to this project, but it
+    should be suitable for most datasets
+  -->
+  <div class="chart-container" style="display: flex; overflow: scroll; margin-left: 160px;">
+    <img id="network-image" alt="Network Image" style="height: 600px; width: 1000px;">
+  </div>
+
+  <script>
+    // The user can select several options to
+    // manipulate the visualisation, therefore
+    // a listener needs to be added to update
+    // the graph in real time
+    const form = document.querySelector('form');
+    const networkImage = document.querySelector('#network-image');
+
+    // Note - the following article was used as reference
+    // https://www.valentinog.com/blog/formdata/
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      fetch('/network-graph', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          networkImage.onload = function() {
+            URL.revokeObjectURL(this.src);
+          };
+          networkImage.src = url;
+        });
+    });
+
+      // Add a click listener to the download button
+  const downloadBtn = document.querySelector('#download-btn');
+  downloadBtn.addEventListener('click', (event) => {
+
+    // Get the canvas
+    const canvas = document.querySelector('#canvas');
+    canvas.width = networkImage.width;
+    canvas.height = networkImage.height;
+    // Draw the image on the canvas
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(networkImage, 12, 10);
+    // Convert the canvas to a data URL
+    const dataUrl = canvas.toDataURL('image/png');
+    // Trigger the download
+    const link = document.createElement('a');
+    link.download = 'network-graph.png';
+    link.href = dataUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+  </script>
+{% endblock %}

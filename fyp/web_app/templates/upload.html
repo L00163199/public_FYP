@@ -1,0 +1,41 @@
+<!--
+  Student Name: Dylan Walsh
+  Student Number: L00163199
+  Description: The purpose of this file is to
+  allow the user to upload a csv file which
+  will then be temporarily stored in a local
+  folder so that it can be accessed later
+-->
+
+{% extends 'index.html' %}
+
+{% block content %}
+  <div class="upload-container">
+    <!-- Use flashes to notify user if an error occurs -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <h2>Please Upload a CSV File</h2>
+    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" id="file">
+      <input type="submit" value="Upload">
+    </form>
+  </div>
+{% endblock %}
+
+<style>
+.upload-container {
+  display: flex;
+  justify-content: center;
+  top: 100px;
+  align-items: center;
+  height: 100vh;
+}
+</style>

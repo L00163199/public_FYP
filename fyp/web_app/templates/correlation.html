@@ -1,0 +1,56 @@
+{% extends "index.html" %}
+
+{% block content %}
+<!--
+  Student Name: Dylan Walsh
+  Student Number: L00163199
+  Description: The purpose of this file is to
+  plot a visualisation of the correlation between
+  two variables, of which are selected by the user
+-->
+<div class="container">
+  <h2>Correlation Plot</h2>
+  <form method="POST">
+    <div class="form-group">
+      <label for="variable1-select">Select Variable 1:</label>
+      <select class="form-control" id="xvalue-select" name="x_value">
+
+        <!-- Fill the dropdown list with dataset column names -->
+        {% for option in options %}
+        <option value="{{ option }}" {% if x_value == option %} selected {% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <label for="variable2-select">Select Variable 2:</label>
+      <select class="form-control" id="yvalue-select" name="y_value">
+        {% for option in options %}
+        <option value="{{ option }}" {% if y_value == option %} selected {% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Plot</button>
+    </div>
+  </form>
+  <div class="chart-container" style="max-height: 500px; overflow: scroll;">
+    <div id="correlation-plot"></div>
+  <!-- 
+    It is possible there will be no
+    correlation between the two variables,
+    this must be accounted for
+   -->
+  </div>
+        {% if corr is defined %}
+            <p>Pearson Correlation Coefficient: {{ corr|round(2) }}</p>
+        {% else %}
+            <p>No correlation value found.</p>
+        {% endif %}
+  </div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    // Remove the semicolon as causes formatting
+    // issues with html
+    var data = {{ graphJSON|safe }}
+    var layout = {title: 'Correlation Plot', xaxis: {title: '{{ x_value }}'}, yaxis: {title: '{{ y_value }}'}, showlegend: false};
+    Plotly.newPlot('correlation-plot', data, layout);
+
+</script>
+{% endblock %}

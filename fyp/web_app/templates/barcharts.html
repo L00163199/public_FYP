@@ -1,0 +1,48 @@
+{% extends "index.html" %}
+
+{% block content %}
+<!--
+  Student Name: Dylan Walsh
+  Student Number: L00163199
+  Description: The purpose of this file is to
+  allow the user to select variables to plot
+  a barchart visualisation which is then displayed
+-->
+<div class="container">
+  <h2>Bar Chart</h2>
+  <form method="POST">
+    <div class="form-group">
+
+      <!-- Select x value -->
+      <label for="x-value-select">Select X Value:</label>
+      <select class="form-control" id="x-value-select" name="x_value">
+        {% for option in options %}
+        <option value="{{ option.value }}" {% if x_value == option.value %} selected {% endif %}>{{ option.label }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Select y value -->
+      <label for="y-value-select">Select Y Value:</label>
+      <select class="form-control" id="y-value-select" name="y_value">
+        {% for option in options %}
+        <option value="{{ option.value }}" {% if y_value == option.value %} selected {% endif %}>{{ option.label }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Plot</button>
+    </div>
+  </form>
+  
+  <!-- Contains the barchart visualisation -->
+  <div class="chart-container" style="max-height: 500px; overflow: scroll;">
+    <div id="bar-chart"></div>
+  </div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+  var layout = {title: 'Bar Chart', xaxis: {title: '{{ x_value }}'}, yaxis: {title: '{{ y_value }}', range: [-1, 1]}};
+  var data = {{ graphJSON|safe }}
+  
+  Plotly.newPlot('bar-chart', data, layout, {displayModeBar: false});
+</script>
+{% endblock %}
